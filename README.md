@@ -12,7 +12,6 @@
 2.Seyianoi Sankok - 190384
 
 
-*(Add 3 more if your group is 6-8 members)*
 
 ---
 
@@ -87,4 +86,5 @@ This project implements **four CPU scheduling algorithms** with automatic calcul
 
 ### Method 1: Python Implementation (Command Line)
 ```bash
+
 
