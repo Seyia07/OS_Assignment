@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPU Scheduling Simulator - OS Assignment</title>
+    <title>CPU Scheduling Simulator - Interactive</title>
     <style>
         * {
             margin: 0;
@@ -12,139 +12,192 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #1e293b 0%, #7e22ce 50%, #1e293b 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 2rem;
-            color: #fff;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
         h1 {
-            font-size: 3rem;
+            color: #333;
             margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
+            font-size: 2.5rem;
         }
 
         .subtitle {
-            color: #e9d5ff;
-            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
         }
 
-        .algorithm-buttons {
+        .controls {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 1rem;
             margin-bottom: 2rem;
         }
 
-        .algo-btn {
-            padding: 1.5rem;
-            border: none;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #1e293b;
-            color: #cbd5e1;
+        .control-group {
+            display: flex;
+            flex-direction: column;
         }
 
-        .algo-btn:hover {
-            background: #334155;
+        label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        select, input[type="number"] {
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 4px;
+        }
+
+        .info-box strong {
+            color: #1976d2;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-add {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #45a049;
             transform: translateY(-2px);
         }
 
-        .algo-btn.active {
-            background: #9333ea;
+        .btn-run {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(147, 51, 234, 0.3);
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.2rem;
+            margin-top: 1rem;
         }
 
-        .card {
-            background: #1e293b;
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        .btn-run:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
-        .card h2 {
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1.8rem;
+        .btn-load {
+            background: #ff9800;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+
+        .btn-load:hover {
+            background: #f57c00;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         th {
-            background: #334155;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             padding: 1rem;
             text-align: left;
             font-weight: 600;
         }
 
         td {
-            padding: 1rem;
-            border-bottom: 1px solid #334155;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e0e0e0;
         }
 
         tr:hover {
-            background: #2d3748;
+            background: #f5f5f5;
         }
 
-        .quantum-info {
-            background: rgba(147, 51, 234, 0.2);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
 
-        .run-button {
-            background: linear-gradient(135deg, #9333ea 0%, #ec4899 100%);
+        .btn-delete {
+            background: #f44336;
             color: white;
+            padding: 0.5rem 1rem;
             border: none;
-            padding: 1rem 3rem;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 700;
+            border-radius: 4px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 2rem auto;
-            transition: all 0.3s ease;
         }
 
-        .run-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4);
+        .btn-delete:hover {
+            background: #d32f2f;
         }
 
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
+        .results {
             margin-top: 2rem;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
         .metric-card {
@@ -154,407 +207,444 @@
         }
 
         .metric-card.waiting {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #4caf50 0%, #8bc34a 100%);
+            color: white;
         }
 
         .metric-card.turnaround {
-            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            background: linear-gradient(135deg, #2196f3 0%, #03a9f4 100%);
+            color: white;
         }
 
         .metric-card h3 {
             font-size: 1.2rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .metric-card .value {
             font-size: 3rem;
-            font-weight: 700;
-        }
-
-        .highlight {
-            color: #c084fc;
-            font-weight: 600;
+            font-weight: bold;
         }
 
         .hidden {
             display: none;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .load-presets {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
         }
 
-        .results {
-            animation: fadeIn 0.5s ease;
+        .formulas {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .formulas h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .formulas ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .formulas li {
+            padding: 0.25rem 0;
+            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>
-                <span>⚙️</span>
-                CPU Scheduling Simulator
-            </h1>
-            <p class="subtitle">Operating Systems Assignment - Process Scheduling Algorithms</p>
-        </header>
+        <h1>🖥️ CPU Scheduling Simulator</h1>
+        <p class="subtitle">Interactive Process Scheduling - Edit Any Values!</p>
 
-        <div class="algorithm-buttons">
-            <button class="algo-btn active" data-algo="fcfs">First Come First Serve (FCFS)</button>
-            <button class="algo-btn" data-algo="srtf">Shortest Remaining Time First (SRTF)</button>
-            <button class="algo-btn" data-algo="rr">Round Robin (Time Quantum = 2)</button>
-            <button class="algo-btn" data-algo="priority">Priority Scheduling (Preemptive)</button>
-        </div>
-
-        <div class="card">
-            <h2>ℹ️ Input Processes - <span id="algoName">First Come First Serve (FCFS)</span></h2>
-            
-            <table id="inputTable">
-                <!-- Dynamic content -->
-            </table>
-
-            <div id="quantumInfo" class="quantum-info hidden">
-                <strong>Time Quantum:</strong> <span id="quantumValue">2</span> units
+        <div class="controls">
+            <div class="control-group">
+                <label>Select Algorithm:</label>
+                <select id="algorithmSelect" onchange="updateAlgorithmInfo()">
+                    <option value="fcfs">First Come First Serve (FCFS)</option>
+                    <option value="srtf">Shortest Remaining Time First (SRTF)</option>
+                    <option value="rr">Round Robin (RR)</option>
+                    <option value="priority">Priority Scheduling (Preemptive)</option>
+                </select>
             </div>
 
-            <button class="run-button" onclick="runAlgorithm()">
-                ▶️ Run Algorithm
-            </button>
+            <div class="control-group" id="quantumControl" style="display:none;">
+                <label>Time Quantum:</label>
+                <input type="number" id="timeQuantum" value="2" min="1">
+            </div>
         </div>
 
-        <div id="resultsSection" class="card hidden results">
+        <div class="info-box" id="algoInfo">
+            <strong>FCFS:</strong> Non-preemptive. Processes executed in order of arrival.
+        </div>
+
+        <div class="load-presets">
+            <strong style="margin-right: 1rem;">Quick Load Assignment Data:</strong>
+            <button class="btn btn-load" onclick="loadPreset('fcfs')">FCFS (Task 1)</button>
+            <button class="btn btn-load" onclick="loadPreset('srtf')">SRTF (Task 2)</button>
+            <button class="btn btn-load" onclick="loadPreset('rr')">Round Robin (Task 3)</button>
+            <button class="btn btn-load" onclick="loadPreset('priority')">Priority (Task 4)</button>
+        </div>
+
+        <div class="section-header">
+            <h2>📋 Process List (Edit Any Value!)</h2>
+            <button class="btn btn-add" onclick="addProcess()">➕ Add Process</button>
+        </div>
+
+        <table id="processTable">
+            <thead>
+                <tr>
+                    <th>Process ID</th>
+                    <th>Arrival Time</th>
+                    <th>Burst Time</th>
+                    <th id="priorityHeader" class="hidden">Priority</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="processTableBody">
+                <!-- Dynamic rows -->
+            </tbody>
+        </table>
+
+        <button class="btn btn-run" onclick="runScheduler()">▶️ Run Scheduler & Calculate</button>
+
+        <div id="resultsSection" class="results hidden">
             <h2>📊 Results</h2>
             
-            <table id="resultsTable">
-                <!-- Dynamic content -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Process</th>
+                        <th>Arrival</th>
+                        <th>Burst</th>
+                        <th id="resultsPriorityHeader" class="hidden">Priority</th>
+                        <th>Completion</th>
+                        <th>Turnaround</th>
+                        <th>Waiting</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTableBody">
+                    <!-- Results -->
+                </tbody>
             </table>
 
-            <div class="results-grid">
+            <div class="metrics">
                 <div class="metric-card waiting">
                     <h3>Average Waiting Time</h3>
-                    <div class="value"><span id="avgWaiting">0.00</span> <small style="font-size: 1.5rem;">units</small></div>
+                    <div class="value"><span id="avgWaiting">0.00</span> <small style="font-size:1.5rem;">units</small></div>
                 </div>
                 <div class="metric-card turnaround">
                     <h3>Average Turnaround Time</h3>
-                    <div class="value"><span id="avgTurnaround">0.00</span> <small style="font-size: 1.5rem;">units</small></div>
+                    <div class="value"><span id="avgTurnaround">0.00</span> <small style="font-size:1.5rem;">units</small></div>
                 </div>
+            </div>
+
+            <div class="formulas">
+                <h4>📐 Formulas Used:</h4>
+                <ul>
+                    <li>• <strong>Turnaround Time</strong> = Completion Time - Arrival Time</li>
+                    <li>• <strong>Waiting Time</strong> = Turnaround Time - Burst Time</li>
+                    <li>• <strong>Average Waiting Time</strong> = Σ(Waiting Time) / Number of Processes</li>
+                    <li>• <strong>Average Turnaround Time</strong> = Σ(Turnaround Time) / Number of Processes</li>
+                </ul>
             </div>
         </div>
     </div>
 
     <script>
-        const algorithms = {
-            fcfs: {
-                name: 'First Come First Serve (FCFS)',
-                processes: [
-                    { id: 'P1', arrival: 0, burst: 8 },
-                    { id: 'P2', arrival: 1, burst: 4 },
-                    { id: 'P3', arrival: 2, burst: 9 },
-                    { id: 'P4', arrival: 3, burst: 5 }
-                ]
-            },
-            srtf: {
-                name: 'Shortest Remaining Time First (SRTF)',
-                processes: [
-                    { id: 'P1', arrival: 3, burst: 1 },
-                    { id: 'P2', arrival: 1, burst: 4 },
-                    { id: 'P3', arrival: 4, burst: 2 },
-                    { id: 'P4', arrival: 0, burst: 6 },
-                    { id: 'P5', arrival: 2, burst: 3 }
-                ]
-            },
-            rr: {
-                name: 'Round Robin (Time Quantum = 2)',
-                quantum: 2,
-                processes: [
-                    { id: 'P1', arrival: 0, burst: 5 },
-                    { id: 'P2', arrival: 1, burst: 3 },
-                    { id: 'P3', arrival: 2, burst: 1 },
-                    { id: 'P4', arrival: 3, burst: 2 },
-                    { id: 'P5', arrival: 4, burst: 3 }
-                ]
-            },
-            priority: {
-                name: 'Priority Scheduling (Preemptive)',
-                processes: [
-                    { id: 'P1', arrival: 0, burst: 4, priority: 2 },
-                    { id: 'P2', arrival: 1, burst: 3, priority: 3 },
-                    { id: 'P3', arrival: 2, burst: 1, priority: 4 },
-                    { id: 'P4', arrival: 3, burst: 5, priority: 5 },
-                    { id: 'P5', arrival: 4, burst: 2, priority: 5 }
-                ]
-            }
-        };
+        let processes = [];
 
-        let currentAlgo = 'fcfs';
-
-        // Algorithm button handlers
-        document.querySelectorAll('.algo-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.algo-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentAlgo = btn.dataset.algo;
-                updateInputTable();
-                document.getElementById('resultsSection').classList.add('hidden');
-            });
-        });
-
-        function updateInputTable() {
-            const algo = algorithms[currentAlgo];
-            document.getElementById('algoName').textContent = algo.name;
-            
-            const hasPriority = currentAlgo === 'priority';
-            const hasQuantum = currentAlgo === 'rr';
-            
-            document.getElementById('quantumInfo').classList.toggle('hidden', !hasQuantum);
-            
-            let html = '<thead><tr><th>Process ID</th><th>Arrival Time</th><th>Burst Time</th>';
-            if (hasPriority) html += '<th>Priority</th>';
-            html += '</tr></thead><tbody>';
-            
-            algo.processes.forEach(p => {
-                html += `<tr>
-                    <td class="highlight">${p.id}</td>
-                    <td>${p.arrival}</td>
-                    <td>${p.burst}</td>
-                    ${hasPriority ? `<td>${p.priority}</td>` : ''}
-                </tr>`;
-            });
-            
-            html += '</tbody>';
-            document.getElementById('inputTable').innerHTML = html;
+        // Initialize with FCFS data
+        function init() {
+            loadPreset('fcfs');
         }
 
-        function calculateFCFS(processes) {
-            const sorted = [...processes].sort((a, b) => a.arrival - b.arrival);
-            let currentTime = 0;
-            const results = [];
-
-            sorted.forEach(process => {
-                const startTime = Math.max(currentTime, process.arrival);
-                const completionTime = startTime + process.burst;
-                const turnaroundTime = completionTime - process.arrival;
-                const waitingTime = turnaroundTime - process.burst;
-
-                results.push({
-                    ...process,
-                    completionTime,
-                    turnaroundTime,
-                    waitingTime
-                });
-
-                currentTime = completionTime;
-            });
-
-            return results;
-        }
-
-        function calculateSRTF(processes) {
-            const n = processes.length;
-            const remaining = processes.map(p => ({ ...p, remaining: p.burst }));
-            let currentTime = 0;
-            let completed = 0;
-            const results = processes.map(p => ({ 
-                ...p, 
-                completionTime: 0, 
-                turnaroundTime: 0, 
-                waitingTime: 0 
-            }));
-
-            while (completed < n) {
-                let shortestIdx = -1;
-                let shortestTime = Infinity;
-
-                for (let i = 0; i < n; i++) {
-                    if (remaining[i].arrival <= currentTime && 
-                        remaining[i].remaining > 0 && 
-                        remaining[i].remaining < shortestTime) {
-                        shortestTime = remaining[i].remaining;
-                        shortestIdx = i;
-                    }
-                }
-
-                if (shortestIdx === -1) {
-                    currentTime++;
-                    continue;
-                }
-
-                remaining[shortestIdx].remaining--;
-                currentTime++;
-
-                if (remaining[shortestIdx].remaining === 0) {
-                    completed++;
-                    const idx = processes.findIndex(p => p.id === remaining[shortestIdx].id);
-                    results[idx].completionTime = currentTime;
-                    results[idx].turnaroundTime = currentTime - processes[idx].arrival;
-                    results[idx].waitingTime = results[idx].turnaroundTime - processes[idx].burst;
-                }
-            }
-
-            return results;
-        }
-
-        function calculateRR(processes, quantum) {
-            const queue = [];
-            const remaining = processes.map(p => ({ ...p, remaining: p.burst }));
-            const results = processes.map(p => ({ 
-                ...p, 
-                completionTime: 0, 
-                turnaroundTime: 0, 
-                waitingTime: 0 
-            }));
-            let currentTime = 0;
-            let completed = 0;
-            const arrived = new Set();
-
-            const addArrivedProcesses = (time) => {
-                for (let i = 0; i < processes.length; i++) {
-                    if (processes[i].arrival <= time && !arrived.has(i) && remaining[i].remaining > 0) {
-                        queue.push(i);
-                        arrived.add(i);
-                    }
-                }
-            };
-
-            addArrivedProcesses(0);
-
-            while (completed < processes.length) {
-                if (queue.length === 0) {
-                    currentTime++;
-                    addArrivedProcesses(currentTime);
-                    continue;
-                }
-
-                const idx = queue.shift();
-                const executeTime = Math.min(quantum, remaining[idx].remaining);
-                remaining[idx].remaining -= executeTime;
-                currentTime += executeTime;
-
-                addArrivedProcesses(currentTime);
-
-                if (remaining[idx].remaining === 0) {
-                    completed++;
-                    const processIdx = processes.findIndex(p => p.id === remaining[idx].id);
-                    results[processIdx].completionTime = currentTime;
-                    results[processIdx].turnaroundTime = currentTime - processes[processIdx].arrival;
-                    results[processIdx].waitingTime = results[processIdx].turnaroundTime - processes[processIdx].burst;
-                } else {
-                    queue.push(idx);
-                }
-            }
-
-            return results;
-        }
-
-        function calculatePriority(processes) {
-            const n = processes.length;
-            const remaining = processes.map(p => ({ ...p, remaining: p.burst }));
-            let currentTime = 0;
-            let completed = 0;
-            const results = processes.map(p => ({ 
-                ...p, 
-                completionTime: 0, 
-                turnaroundTime: 0, 
-                waitingTime: 0 
-            }));
-
-            while (completed < n) {
-                let highestPriorityIdx = -1;
-                let highestPriority = -1;
-
-                for (let i = 0; i < n; i++) {
-                    if (remaining[i].arrival <= currentTime && 
-                        remaining[i].remaining > 0 && 
-                        remaining[i].priority > highestPriority) {
-                        highestPriority = remaining[i].priority;
-                        highestPriorityIdx = i;
-                    }
-                }
-
-                if (highestPriorityIdx === -1) {
-                    currentTime++;
-                    continue;
-                }
-
-                remaining[highestPriorityIdx].remaining--;
-                currentTime++;
-
-                if (remaining[highestPriorityIdx].remaining === 0) {
-                    completed++;
-                    const idx = processes.findIndex(p => p.id === remaining[highestPriorityIdx].id);
-                    results[idx].completionTime = currentTime;
-                    results[idx].turnaroundTime = currentTime - processes[idx].arrival;
-                    results[idx].waitingTime = results[idx].turnaroundTime - processes[idx].burst;
-                }
-            }
-
-            return results;
-        }
-
-        function runAlgorithm() {
-            const algorithm = algorithms[currentAlgo];
-            let calculatedResults;
-
-            switch(currentAlgo) {
+        function loadPreset(algo) {
+            document.getElementById('algorithmSelect').value = algo;
+            
+            switch(algo) {
                 case 'fcfs':
-                    calculatedResults = calculateFCFS(algorithm.processes);
+                    processes = [
+                        {id: 'P1', arrival: 0, burst: 8, priority: 2},
+                        {id: 'P2', arrival: 1, burst: 4, priority: 3},
+                        {id: 'P3', arrival: 2, burst: 9, priority: 4},
+                        {id: 'P4', arrival: 3, burst: 5, priority: 5}
+                    ];
                     break;
                 case 'srtf':
-                    calculatedResults = calculateSRTF(algorithm.processes);
+                    processes = [
+                        {id: 'P1', arrival: 3, burst: 1, priority: 2},
+                        {id: 'P2', arrival: 1, burst: 4, priority: 3},
+                        {id: 'P3', arrival: 4, burst: 2, priority: 4},
+                        {id: 'P4', arrival: 0, burst: 6, priority: 5},
+                        {id: 'P5', arrival: 2, burst: 3, priority: 5}
+                    ];
                     break;
                 case 'rr':
-                    calculatedResults = calculateRR(algorithm.processes, algorithm.quantum);
+                    processes = [
+                        {id: 'P1', arrival: 0, burst: 5, priority: 2},
+                        {id: 'P2', arrival: 1, burst: 3, priority: 3},
+                        {id: 'P3', arrival: 2, burst: 1, priority: 4},
+                        {id: 'P4', arrival: 3, burst: 2, priority: 5},
+                        {id: 'P5', arrival: 4, burst: 3, priority: 5}
+                    ];
+                    document.getElementById('timeQuantum').value = 2;
                     break;
                 case 'priority':
-                    calculatedResults = calculatePriority(algorithm.processes);
+                    processes = [
+                        {id: 'P1', arrival: 0, burst: 4, priority: 2},
+                        {id: 'P2', arrival: 1, burst: 3, priority: 3},
+                        {id: 'P3', arrival: 2, burst: 1, priority: 4},
+                        {id: 'P4', arrival: 3, burst: 5, priority: 5},
+                        {id: 'P5', arrival: 4, burst: 2, priority: 5}
+                    ];
                     break;
-                default:
-                    return;
             }
-
-            const avgWaitingTime = calculatedResults.reduce((sum, p) => sum + p.waitingTime, 0) / calculatedResults.length;
-            const avgTurnaroundTime = calculatedResults.reduce((sum, p) => sum + p.turnaroundTime, 0) / calculatedResults.length;
-
-            displayResults(calculatedResults, avgWaitingTime, avgTurnaroundTime);
+            
+            updateAlgorithmInfo();
+            renderProcessTable();
         }
 
-        function displayResults(results, avgWaiting, avgTurnaround) {
-            const hasPriority = currentAlgo === 'priority';
+        function updateAlgorithmInfo() {
+            const algo = document.getElementById('algorithmSelect').value;
+            const infoBox = document.getElementById('algoInfo');
+            const quantumControl = document.getElementById('quantumControl');
+            const priorityHeader = document.getElementById('priorityHeader');
             
-            let html = '<thead><tr><th>Process ID</th><th>Arrival Time</th><th>Burst Time</th>';
-            if (hasPriority) html += '<th>Priority</th>';
-            html += '<th>Completion Time</th><th>Turnaround Time</th><th>Waiting Time</th></tr></thead><tbody>';
+            const infos = {
+                fcfs: '<strong>FCFS:</strong> Non-preemptive. Processes executed in order of arrival.',
+                srtf: '<strong>SRTF:</strong> Preemptive. Always executes process with shortest remaining time.',
+                rr: '<strong>Round Robin:</strong> Preemptive. Each process gets equal CPU time in circular fashion.',
+                priority: '<strong>Priority:</strong> Preemptive. Higher number = Higher priority. Can interrupt lower priority.'
+            };
             
-            results.forEach(p => {
-                html += `<tr>
-                    <td class="highlight">${p.id}</td>
+            infoBox.innerHTML = infos[algo];
+            quantumControl.style.display = algo === 'rr' ? 'block' : 'none';
+            
+            if (algo === 'priority') {
+                priorityHeader.classList.remove('hidden');
+            } else {
+                priorityHeader.classList.add('hidden');
+            }
+        }
+
+        function renderProcessTable() {
+            const tbody = document.getElementById('processTableBody');
+            const algo = document.getElementById('algorithmSelect').value;
+            
+            tbody.innerHTML = processes.map((p, idx) => `
+                <tr>
+                    <td><input type="text" value="${p.id}" onchange="updateProcess(${idx}, 'id', this.value)"></td>
+                    <td><input type="number" value="${p.arrival}" min="0" onchange="updateProcess(${idx}, 'arrival', this.value)"></td>
+                    <td><input type="number" value="${p.burst}" min="1" onchange="updateProcess(${idx}, 'burst', this.value)"></td>
+                    <td class="${algo === 'priority' ? '' : 'hidden'}">
+                        <input type="number" value="${p.priority}" min="1" onchange="updateProcess(${idx}, 'priority', this.value)">
+                    </td>
+                    <td><button class="btn-delete" onclick="deleteProcess(${idx})">🗑️ Delete</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function updateProcess(idx, field, value) {
+            if (field === 'id') {
+                processes[idx][field] = value;
+            } else {
+                processes[idx][field] = Number(value);
+            }
+        }
+
+        function addProcess() {
+            const newId = `P${processes.length + 1}`;
+            processes.push({id: newId, arrival: 0, burst: 1, priority: 1});
+            renderProcessTable();
+        }
+
+        function deleteProcess(idx) {
+            processes.splice(idx, 1);
+            renderProcessTable();
+        }
+
+        // Scheduling Algorithms
+        function fcfs(procs) {
+            const sorted = [...procs].sort((a, b) => a.arrival - b.arrival);
+            let currentTime = 0;
+            return sorted.map(p => {
+                const start = Math.max(currentTime, p.arrival);
+                const completion = start + p.burst;
+                const turnaround = completion - p.arrival;
+                const waiting = turnaround - p.burst;
+                currentTime = completion;
+                return {...p, completion, turnaround, waiting};
+            });
+        }
+
+        function srtf(procs) {
+            const processes = procs.map(p => ({...p, remaining: p.burst}));
+            let currentTime = 0;
+            const completed = [];
+
+            while (completed.length < processes.length) {
+                const available = processes.filter(p => p.arrival <= currentTime && p.remaining > 0);
+                
+                if (available.length === 0) {
+                    currentTime++;
+                    continue;
+                }
+
+                const shortest = available.reduce((min, p) => p.remaining < min.remaining ? p : min);
+                shortest.remaining--;
+                currentTime++;
+
+                if (shortest.remaining === 0) {
+                    const completion = currentTime;
+                    const turnaround = completion - shortest.arrival;
+                    const waiting = turnaround - shortest.burst;
+                    completed.push({...shortest, completion, turnaround, waiting});
+                }
+            }
+
+            return completed.sort((a, b) => a.id.localeCompare(b.id));
+        }
+
+        function roundRobin(procs, quantum) {
+            const processes = procs.map(p => ({...p, remaining: p.burst}));
+            const queue = [];
+            let currentTime = 0;
+            const completed = [];
+            const arrived = new Set();
+
+            while (completed.length < processes.length) {
+                processes.forEach(p => {
+                    if (p.arrival <= currentTime && !arrived.has(p.id) && p.remaining > 0) {
+                        queue.push(p);
+                        arrived.add(p.id);
+                    }
+                });
+
+                if (queue.length === 0) {
+                    currentTime++;
+                    continue;
+                }
+
+                const current = queue.shift();
+                const executeTime = Math.min(quantum, current.remaining);
+                current.remaining -= executeTime;
+                currentTime += executeTime;
+
+                processes.forEach(p => {
+                    if (p.arrival <= currentTime && !arrived.has(p.id) && p.remaining > 0 && p.id !== current.id) {
+                        queue.push(p);
+                        arrived.add(p.id);
+                    }
+                });
+
+                if (current.remaining > 0) {
+                    queue.push(current);
+                } else {
+                    const completion = currentTime;
+                    const turnaround = completion - current.arrival;
+                    const waiting = turnaround - current.burst;
+                    completed.push({...current, completion, turnaround, waiting});
+                }
+            }
+
+            return completed.sort((a, b) => a.id.localeCompare(b.id));
+        }
+
+        function priorityScheduling(procs) {
+            const processes = procs.map(p => ({...p, remaining: p.burst}));
+            let currentTime = 0;
+            const completed = [];
+
+            while (completed.length < processes.length) {
+                const available = processes.filter(p => p.arrival <= currentTime && p.remaining > 0);
+
+                if (available.length === 0) {
+                    currentTime++;
+                    continue;
+                }
+
+                const highest = available.reduce((max, p) => 
+                    p.priority > max.priority ? p : (p.priority === max.priority && p.arrival < max.arrival ? p : max)
+                );
+
+                highest.remaining--;
+                currentTime++;
+
+                if (highest.remaining === 0) {
+                    const completion = currentTime;
+                    const turnaround = completion - highest.arrival;
+                    const waiting = turnaround - highest.burst;
+                    completed.push({...highest, completion, turnaround, waiting});
+                }
+            }
+
+            return completed.sort((a, b) => a.id.localeCompare(b.id));
+        }
+
+        function runScheduler() {
+            const algo = document.getElementById('algorithmSelect').value;
+            const quantum = Number(document.getElementById('timeQuantum').value);
+            
+            let results;
+            switch(algo) {
+                case 'fcfs':
+                    results = fcfs(processes);
+                    break;
+                case 'srtf':
+                    results = srtf(processes);
+                    break;
+                case 'rr':
+                    results = roundRobin(processes, quantum);
+                    break;
+                case 'priority':
+                    results = priorityScheduling(processes);
+                    break;
+            }
+
+            displayResults(results, algo);
+        }
+
+        function displayResults(results, algo) {
+            const tbody = document.getElementById('resultsTableBody');
+            const priorityHeader = document.getElementById('resultsPriorityHeader');
+            
+            if (algo === 'priority') {
+                priorityHeader.classList.remove('hidden');
+            } else {
+                priorityHeader.classList.add('hidden');
+            }
+            
+            tbody.innerHTML = results.map(p => `
+                <tr>
+                    <td><strong>${p.id}</strong></td>
                     <td>${p.arrival}</td>
                     <td>${p.burst}</td>
-                    ${hasPriority ? `<td>${p.priority}</td>` : ''}
-                    <td>${p.completionTime}</td>
-                    <td style="color: #60a5fa;">${p.turnaroundTime}</td>
-                    <td style="color: #34d399;">${p.waitingTime}</td>
-                </tr>`;
-            });
-            
-            html += '</tbody>';
-            document.getElementById('resultsTable').innerHTML = html;
-            
-            document.getElementById('avgWaiting').textContent = avgWaiting.toFixed(2);
-            document.getElementById('avgTurnaround').textContent = avgTurnaround.toFixed(2);
-            
+                    <td class="${algo === 'priority' ? '' : 'hidden'}">${p.priority}</td>
+                    <td>${p.completion}</td>
+                    <td style="color: #2196f3; font-weight: bold;">${p.turnaround}</td>
+                    <td style="color: #4caf50; font-weight: bold;">${p.waiting}</td>
+                </tr>
+            `).join('');
+
+            const avgWaiting = (results.reduce((sum, p) => sum + p.waiting, 0) / results.length).toFixed(2);
+            const avgTurnaround = (results.reduce((sum, p) => sum + p.turnaround, 0) / results.length).toFixed(2);
+
+            document.getElementById('avgWaiting').textContent = avgWaiting;
+            document.getElementById('avgTurnaround').textContent = avgTurnaround;
             document.getElementById('resultsSection').classList.remove('hidden');
         }
 
         // Initialize on load
-        updateInputTable();
+        init();
     </script>
 </body>
 </html>
