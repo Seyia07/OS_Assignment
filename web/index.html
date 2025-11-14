@@ -376,4 +376,185 @@
                     if (remaining[i].arrival <= currentTime && 
                         remaining[i].remaining > 0 && 
                         remaining[i].remaining < shortestTime) {
-                        shortestTime = remaining[i].remaining
+                        shortestTime = remaining[i].remaining;
+                        shortestIdx = i;
+                    }
+                }
+
+                if (shortestIdx === -1) {
+                    currentTime++;
+                    continue;
+                }
+
+                remaining[shortestIdx].remaining--;
+                currentTime++;
+
+                if (remaining[shortestIdx].remaining === 0) {
+                    completed++;
+                    const idx = processes.findIndex(p => p.id === remaining[shortestIdx].id);
+                    results[idx].completionTime = currentTime;
+                    results[idx].turnaroundTime = currentTime - processes[idx].arrival;
+                    results[idx].waitingTime = results[idx].turnaroundTime - processes[idx].burst;
+                }
+            }
+
+            return results;
+        }
+
+        function calculateRR(processes, quantum) {
+            const queue = [];
+            const remaining = processes.map(p => ({ ...p, remaining: p.burst }));
+            const results = processes.map(p => ({ 
+                ...p, 
+                completionTime: 0, 
+                turnaroundTime: 0, 
+                waitingTime: 0 
+            }));
+            let currentTime = 0;
+            let completed = 0;
+            const arrived = new Set();
+
+            const addArrivedProcesses = (time) => {
+                for (let i = 0; i < processes.length; i++) {
+                    if (processes[i].arrival <= time && !arrived.has(i) && remaining[i].remaining > 0) {
+                        queue.push(i);
+                        arrived.add(i);
+                    }
+                }
+            };
+
+            addArrivedProcesses(0);
+
+            while (completed < processes.length) {
+                if (queue.length === 0) {
+                    currentTime++;
+                    addArrivedProcesses(currentTime);
+                    continue;
+                }
+
+                const idx = queue.shift();
+                const executeTime = Math.min(quantum, remaining[idx].remaining);
+                remaining[idx].remaining -= executeTime;
+                currentTime += executeTime;
+
+                addArrivedProcesses(currentTime);
+
+                if (remaining[idx].remaining === 0) {
+                    completed++;
+                    const processIdx = processes.findIndex(p => p.id === remaining[idx].id);
+                    results[processIdx].completionTime = currentTime;
+                    results[processIdx].turnaroundTime = currentTime - processes[processIdx].arrival;
+                    results[processIdx].waitingTime = results[processIdx].turnaroundTime - processes[processIdx].burst;
+                } else {
+                    queue.push(idx);
+                }
+            }
+
+            return results;
+        }
+
+        function calculatePriority(processes) {
+            const n = processes.length;
+            const remaining = processes.map(p => ({ ...p, remaining: p.burst }));
+            let currentTime = 0;
+            let completed = 0;
+            const results = processes.map(p => ({ 
+                ...p, 
+                completionTime: 0, 
+                turnaroundTime: 0, 
+                waitingTime: 0 
+            }));
+
+            while (completed < n) {
+                let highestPriorityIdx = -1;
+                let highestPriority = -1;
+
+                for (let i = 0; i < n; i++) {
+                    if (remaining[i].arrival <= currentTime && 
+                        remaining[i].remaining > 0 && 
+                        remaining[i].priority > highestPriority) {
+                        highestPriority = remaining[i].priority;
+                        highestPriorityIdx = i;
+                    }
+                }
+
+                if (highestPriorityIdx === -1) {
+                    currentTime++;
+                    continue;
+                }
+
+                remaining[highestPriorityIdx].remaining--;
+                currentTime++;
+
+                if (remaining[highestPriorityIdx].remaining === 0) {
+                    completed++;
+                    const idx = processes.findIndex(p => p.id === remaining[highestPriorityIdx].id);
+                    results[idx].completionTime = currentTime;
+                    results[idx].turnaroundTime = currentTime - processes[idx].arrival;
+                    results[idx].waitingTime = results[idx].turnaroundTime - processes[idx].burst;
+                }
+            }
+
+            return results;
+        }
+
+        function runAlgorithm() {
+            const algorithm = algorithms[currentAlgo];
+            let calculatedResults;
+
+            switch(currentAlgo) {
+                case 'fcfs':
+                    calculatedResults = calculateFCFS(algorithm.processes);
+                    break;
+                case 'srtf':
+                    calculatedResults = calculateSRTF(algorithm.processes);
+                    break;
+                case 'rr':
+                    calculatedResults = calculateRR(algorithm.processes, algorithm.quantum);
+                    break;
+                case 'priority':
+                    calculatedResults = calculatePriority(algorithm.processes);
+                    break;
+                default:
+                    return;
+            }
+
+            const avgWaitingTime = calculatedResults.reduce((sum, p) => sum + p.waitingTime, 0) / calculatedResults.length;
+            const avgTurnaroundTime = calculatedResults.reduce((sum, p) => sum + p.turnaroundTime, 0) / calculatedResults.length;
+
+            displayResults(calculatedResults, avgWaitingTime, avgTurnaroundTime);
+        }
+
+        function displayResults(results, avgWaiting, avgTurnaround) {
+            const hasPriority = currentAlgo === 'priority';
+            
+            let html = '<thead><tr><th>Process ID</th><th>Arrival Time</th><th>Burst Time</th>';
+            if (hasPriority) html += '<th>Priority</th>';
+            html += '<th>Completion Time</th><th>Turnaround Time</th><th>Waiting Time</th></tr></thead><tbody>';
+            
+            results.forEach(p => {
+                html += `<tr>
+                    <td class="highlight">${p.id}</td>
+                    <td>${p.arrival}</td>
+                    <td>${p.burst}</td>
+                    ${hasPriority ? `<td>${p.priority}</td>` : ''}
+                    <td>${p.completionTime}</td>
+                    <td style="color: #60a5fa;">${p.turnaroundTime}</td>
+                    <td style="color: #34d399;">${p.waitingTime}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody>';
+            document.getElementById('resultsTable').innerHTML = html;
+            
+            document.getElementById('avgWaiting').textContent = avgWaiting.toFixed(2);
+            document.getElementById('avgTurnaround').textContent = avgTurnaround.toFixed(2);
+            
+            document.getElementById('resultsSection').classList.remove('hidden');
+        }
+
+        // Initialize on load
+        updateInputTable();
+    </script>
+</body>
+</html>
