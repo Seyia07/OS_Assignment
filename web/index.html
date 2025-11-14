@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU Scheduling Simulator - OS Assignment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #7e22ce 50%, #1e293b 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .subtitle {
+            color: #e9d5ff;
+            font-size: 1.2rem;
+        }
+
+        .algorithm-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .algo-btn {
+            padding: 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #1e293b;
+            color: #cbd5e1;
+        }
+
+        .algo-btn:hover {
+            background: #334155;
+            transform: translateY(-2px);
+        }
+
+        .algo-btn.active {
+            background: #9333ea;
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(147, 51, 234, 0.3);
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        th {
+            background: #334155;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        tr:hover {
+            background: #2d3748;
+        }
+
+        .quantum-info {
+            background: rgba(147, 51, 234, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .run-button {
+            background: linear-gradient(135deg, #9333ea 0%, #ec4899 100%);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 2rem auto;
+            transition: all 0.3s ease;
+        }
+
+        .run-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.4);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .metric-card {
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .metric-card.waiting {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .metric-card.turnaround {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+        }
+
+        .metric-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .metric-card .value {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .highlight {
+            color: #c084fc;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <span>⚙️</span>
+                CPU Scheduling Simulator
+            </h1>
+            <p class="subtitle">Operating Systems Assignment - Process Scheduling Algorithms</p>
+        </header>
+
+        <div class="algorithm-buttons">
+            <button class="algo-btn active" data-algo="fcfs">First Come First Serve (FCFS)</button>
+            <button class="algo-btn" data-algo="srtf">Shortest Remaining Time First (SRTF)</button>
+            <button class="algo-btn" data-algo="rr">Round Robin (Time Quantum = 2)</button>
+            <button class="algo-btn" data-algo="priority">Priority Scheduling (Preemptive)</button>
+        </div>
+
+        <div class="card">
+            <h2>ℹ️ Input Processes - <span id="algoName">First Come First Serve (FCFS)</span></h2>
+            
+            <table id="inputTable">
+                <!-- Dynamic content -->
+            </table>
+
+            <div id="quantumInfo" class="quantum-info hidden">
+                <strong>Time Quantum:</strong> <span id="quantumValue">2</span> units
+            </div>
+
+            <button class="run-button" onclick="runAlgorithm()">
+                ▶️ Run Algorithm
+            </button>
+        </div>
+
+        <div id="resultsSection" class="card hidden results">
+            <h2>📊 Results</h2>
+            
+            <table id="resultsTable">
+                <!-- Dynamic content -->
+            </table>
+
+            <div class="results-grid">
+                <div class="metric-card waiting">
+                    <h3>Average Waiting Time</h3>
+                    <div class="value"><span id="avgWaiting">0.00</span> <small style="font-size: 1.5rem;">units</small></div>
+                </div>
+                <div class="metric-card turnaround">
+                    <h3>Average Turnaround Time</h3>
+                    <div class="value"><span id="avgTurnaround">0.00</span> <small style="font-size: 1.5rem;">units</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const algorithms = {
+            fcfs: {
+                name: 'First Come First Serve (FCFS)',
+                processes: [
+                    { id: 'P1', arrival: 0, burst: 8 },
+                    { id: 'P2', arrival: 1, burst: 4 },
+                    { id: 'P3', arrival: 2, burst: 9 },
+                    { id: 'P4', arrival: 3, burst: 5 }
+                ]
+            },
+            srtf: {
+                name: 'Shortest Remaining Time First (SRTF)',
+                processes: [
+                    { id: 'P1', arrival: 3, burst: 1 },
+                    { id: 'P2', arrival: 1, burst: 4 },
+                    { id: 'P3', arrival: 4, burst: 2 },
+                    { id: 'P4', arrival: 0, burst: 6 },
+                    { id: 'P5', arrival: 2, burst: 3 }
+                ]
+            },
+            rr: {
+                name: 'Round Robin (Time Quantum = 2)',
+                quantum: 2,
+                processes: [
+                    { id: 'P1', arrival: 0, burst: 5 },
+                    { id: 'P2', arrival: 1, burst: 3 },
+                    { id: 'P3', arrival: 2, burst: 1 },
+                    { id: 'P4', arrival: 3, burst: 2 },
+                    { id: 'P5', arrival: 4, burst: 3 }
+                ]
+            },
+            priority: {
+                name: 'Priority Scheduling (Preemptive)',
+                processes: [
+                    { id: 'P1', arrival: 0, burst: 4, priority: 2 },
+                    { id: 'P2', arrival: 1, burst: 3, priority: 3 },
+                    { id: 'P3', arrival: 2, burst: 1, priority: 4 },
+                    { id: 'P4', arrival: 3, burst: 5, priority: 5 },
+                    { id: 'P5', arrival: 4, burst: 2, priority: 5 }
+                ]
+            }
+        };
+
+        let currentAlgo = 'fcfs';
+
+        // Algorithm button handlers
+        document.querySelectorAll('.algo-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.algo-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentAlgo = btn.dataset.algo;
+                updateInputTable();
+                document.getElementById('resultsSection').classList.add('hidden');
+            });
+        });
+
+        function updateInputTable() {
+            const algo = algorithms[currentAlgo];
+            document.getElementById('algoName').textContent = algo.name;
+            
+            const hasPriority = currentAlgo === 'priority';
+            const hasQuantum = currentAlgo === 'rr';
+            
+            document.getElementById('quantumInfo').classList.toggle('hidden', !hasQuantum);
+            
+            let html = '<thead><tr><th>Process ID</th><th>Arrival Time</th><th>Burst Time</th>';
+            if (hasPriority) html += '<th>Priority</th>';
+            html += '</tr></thead><tbody>';
+            
+            algo.processes.forEach(p => {
+                html += `<tr>
+                    <td class="highlight">${p.id}</td>
+                    <td>${p.arrival}</td>
+                    <td>${p.burst}</td>
+                    ${hasPriority ? `<td>${p.priority}</td>` : ''}
+                </tr>`;
+            });
+            
+            html += '</tbody>';
+            document.getElementById('inputTable').innerHTML = html;
+        }
+
+        function calculateFCFS(processes) {
+            const sorted = [...processes].sort((a, b) => a.arrival - b.arrival);
+            let currentTime = 0;
+            const results = [];
+
+            sorted.forEach(process => {
+                const startTime = Math.max(currentTime, process.arrival);
+                const completionTime = startTime + process.burst;
+                const turnaroundTime = completionTime - process.arrival;
+                const waitingTime = turnaroundTime - process.burst;
+
+                results.push({
+                    ...process,
+                    completionTime,
+                    turnaroundTime,
+                    waitingTime
+                });
+
+                currentTime = completionTime;
+            });
+
+            return results;
+        }
+
+        function calculateSRTF(processes) {
+            const n = processes.length;
+            const remaining = processes.map(p => ({ ...p, remaining: p.burst }));
+            let currentTime = 0;
+            let completed = 0;
+            const results = processes.map(p => ({ 
+                ...p, 
+                completionTime: 0, 
+                turnaroundTime: 0, 
+                waitingTime: 0 
+            }));
+
+            while (completed < n) {
+                let shortestIdx = -1;
+                let shortestTime = Infinity;
+
+                for (let i = 0; i < n; i++) {
+                    if (remaining[i].arrival <= currentTime && 
+                        remaining[i].remaining > 0 && 
+                        remaining[i].remaining < shortestTime) {
+                        shortestTime = remaining[i].remaining
