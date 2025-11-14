@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 
 # OS Assignment - CPU Scheduling Algorithms
 
