@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+venv/
+*.pyc
+
+# C++
+*.o
+*.exe
+scheduler
+a.out
+
+# Java
+*.class
+*.jar
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.sublime-*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
