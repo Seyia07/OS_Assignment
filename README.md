@@ -8,11 +8,9 @@
 
 ## 👥 Group Members
 
-1. [Member Name 1] - [Student ID]
-2. [Member Name 2] - [Student ID]
-3. [Member Name 3] - [Student ID]
-4. [Member Name 4] - [Student ID]
-5. [Member Name 5] - [Student ID]
+1. Annie Wanjohi - 171001
+2.Seyianoi Sankok - 190384
+
 
 *(Add 3 more if your group is 6-8 members)*
 
@@ -89,3 +87,4 @@ This project implements **four CPU scheduling algorithms** with automatic calcul
 
 ### Method 1: Python Implementation (Command Line)
 ```bash
+
