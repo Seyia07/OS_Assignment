@@ -1,5 +1,3 @@
-
-
 # OS Assignment - CPU Scheduling Algorithms
 
 **Course:** Operating Systems  
@@ -150,18 +148,29 @@ OS_Assignment/
 ```
 
 ---
+## 🌟 Interactive Features
 
-## 🌟 Features
+### Web Interface Capabilities:
 
-✅ Handles multiple processes automatically  
-✅ Calculates all required metrics precisely  
-✅ Clean, formatted output  
-✅ Interactive web visualization  
-✅ Comprehensive documentation  
-✅ Test cases with expected outputs  
-✅ Easy to understand and modify  
+1. **Quick Load Assignment Data:**
+   - One-click buttons for all 4 tasks
+   - FCFS, SRTF, Round Robin, Priority presets
 
----
+2. **Fully Editable:**
+   - Change any process value
+   - Add unlimited processes
+   - Delete processes
+   - Modify time quantum
+
+3. **Custom Testing:**
+   - Test with your own data
+   - Verify algorithm behavior
+   - Compare different scenarios
+
+4. **Real-time Results:**
+   - Instant calculation
+   - Color-coded metrics
+   - Formula reference included
 
 ## 📚 Documentation
 
