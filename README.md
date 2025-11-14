@@ -1,3 +1,4 @@
+
 # OS Assignment - CPU Scheduling Algorithms
 
 **Course:** Operating Systems  
@@ -8,9 +9,9 @@
 
 ## 👥 Group Members
 
+
 1. Annie Wanjohi - 171001
 2.Seyianoi Sankok - 190384
-
 
 
 ---
@@ -86,5 +87,119 @@ This project implements **four CPU scheduling algorithms** with automatic calcul
 
 ### Method 1: Python Implementation (Command Line)
 ```bash
+# Navigate to src folder
+cd src
+
+# Run the scheduler
+python scheduler.py
+```
+
+**Requirements:** Python 3.6 or higher
+
+### Method 2: Interactive Web Interface
+```bash
+# Navigate to web folder
+cd web
+
+# Option A: Open directly
+# Just double-click index.html
+
+# Option B: Use local server (recommended)
+python -m http.server 8000
+# Then open browser to: http://localhost:8000
+```
+
+**Requirements:** Any modern web browser (Chrome, Firefox, Edge, Safari)
+
+---
+
+## 📊 Sample Output
+```
+======================================================================================
+Algorithm: First Come First Serve (FCFS)
+======================================================================================
+Process   Arrival   Burst     Completion    Turnaround    Waiting
+--------------------------------------------------------------------------------------
+P1        0         8         8             8             0
+P2        1         4         12            11            7
+P3        2         9         21            19            10
+P4        3         5         26            23            18
+--------------------------------------------------------------------------------------
+Average Waiting Time: 8.75 units
+Average Turnaround Time: 15.25 units
+======================================================================================
+```
+
+---
+
+## 📁 Project Structure
+```
+OS_Assignment/
+├── README.md                          # This file
+├── .gitignore                         # Git ignore rules
+├── src/
+│   └── scheduler.py                   # Python implementation
+├── web/
+│   └── index.html                     # Interactive web simulator
+├── docs/
+│   ├── REPORT.md                      # Detailed project report
+│   └── ALGORITHM_EXPLANATION.md       # Algorithm explanations
+└── tests/
+    └── test_cases.md                  # Test cases & outputs
+```
+
+---
+
+## 🌟 Features
+
+✅ Handles multiple processes automatically  
+✅ Calculates all required metrics precisely  
+✅ Clean, formatted output  
+✅ Interactive web visualization  
+✅ Comprehensive documentation  
+✅ Test cases with expected outputs  
+✅ Easy to understand and modify  
+
+---
+
+## 📚 Documentation
+
+- **[REPORT.md](docs/REPORT.md)** - Complete project report with analysis and observations
+- **[ALGORITHM_EXPLANATION.md](docs/ALGORITHM_EXPLANATION.md)** - Detailed explanation of each algorithm
+- **[test_cases.md](tests/test_cases.md)** - All test cases with expected outputs
+
+---
+
+## 🧪 Testing
+
+All algorithms have been tested with the provided data sets. See `tests/test_cases.md` for:
+- Input data for each algorithm
+- Expected outputs
+- Validation results
+
+---
+
+## 📖 References
+
+1. Operating Systems Concepts (Silberschatz, Galvin, Gagne)
+2. Modern Operating Systems (Andrew S. Tanenbaum)
+3. Course lecture notes and materials
+
+---
+
+## 📄 License
+
+This is an educational project for the Operating Systems course.
+
+---
+
+## 🔗 Links
+
+- **GitHub Repository:** https://github.com/Seyia07/OS_Assignment.git
+- **Web Demo:** Open `web/index.html` in your browser
+
+---
+
+**Last Updated:** November 14, 2025
 
 
